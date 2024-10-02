@@ -198,7 +198,69 @@ select * from pizzas where nome like 'e%' or nome like 'p%';
 
 select * from pizzas order by 1;
 select valor as outro, nome from pizzas order by outro;
+
+-- selecionar os valores distintos
 select distinct valor from pizzas order by valor;
 
+/* funções de agregação
+* Conhecidas como funções estatistícas, as funçoes de agregação obtêm informação sobre conjuntos de linhas especificados
+* AVG (coluna) Média dos valores da coluna
+* COUNT Número de linhas
+* MAX (coluna) Maior valor da coluna
+* MIN (coluna) Menor valor da coluna
+* SUM (coluna) Soma dos valores da coluna
+*/
 
+-- contar quantidades na tabela  
+select count(*) from pizzas;
+select count(nome) from pizzas;
+select count(valor) from pizzas;
+
+-- média do preço das pizzas
+-- as é apelido da coluna
+select avg(valor) as media from pizzas;
+select avg(valor) as media from pizzas where nome like '%esa';
+
+-- Qual é o valor da pizza mais cara do cardápio da pizzaria?
+select max(valor) as 'maior valor' from pizzas;
+
+-- Qual é o valor da pizza mais barata do cardápio da pizzaria?
+select min(valor) as 'menor valor' from pizzas;
+
+-- Qual é o valor total do pedido número 7?
+select sum(valor) from itens_pedido where pedido_id=7;
+
+-- Quantos cada pedido consumiu
+select * from itens_pedido;
+select pedido_id as pedido, sum(valor) as 'valor pedido' from itens_pedido group by pedido_id;
+
+select pedido_id as pedido, sum(valor) as 'valor pedido', sum(quantidade) as 'qtde pizzas' from itens_pedido group by pedido_id;
+select pedido_id as pedido, sum(valor) as 'valor pedido', sum(quantidade) as 'qtde pizzas', avg (valor) as media, sum(valor) / sum(quantidade) as 'valor medio' from itens_pedido group by pedido_id;
+
+-- INNER JOIN: Retorna registros quando há pelo menos uma correspondência em ambas as tabelas
+select * from clientes as c inner join pedidos as p on p.cliente_id = c.id;
+select clientes.id as id_cliente, nome, telefone, pedidos.id as pedido, valor from clientes inner join pedidos on pedidos.cliente_id=clientes.id;
+
+-- LEFT JOIN (ou LEFT OUTER JOIN): Retorna todos os registros da tabela da esquerda 
+-- (primeira tabela mencionada) e os registros correspondentes da tabela da direita
+-- (segunda tabela mencionada).
+select clientes.id as id_cliente, nome, telefone, pedidos.id as pedido, valor from clientes left join pedidos on pedidos.cliente_id=clientes.id;
+
+-- RIGHT JOIN (ou RIGHT OUTER JOIN):Retorna todos os registros da tabela da direita
+-- (segunda tabela mencionada) e os registros correspondentes da tabela da esquerda
+-- primeira tabela mencionada.
+select clientes.id as id_cliente, nome, telefone, pedidos.id as pedido, valor from clientes right join pedidos on pedidos.cliente_id=clientes.id;
+insert into pedidos (id,data, valor) values (9,'2024-10-02',0);
+
+
+-- Quantidade de pedido(s) realizado(s) por cliente, exibir o nome do cliente e a quantidade de pedidos realizados
+select nome, telefone, count(pedidos.id) from clientes left join pedidos on clientes.id = pedidos.cliente_id group by nome, telefone;
+select * from pedidos;
+
+-- 1. Quantos pedidos foram feitos no total?
+select count(*)from pizzas;
+-- 2. Quantos pedidos foram feitos pelo cliente com o nome "Alexandre Santos"?
+select nome, count(clientes.id) from clientes inner join pedidos on clientes.id where nome='Alexandre Santos';
+-- 3. Qual o valor total de todos os pedidos feitos até agora?
+select sum(valor) as 'valor total' from itens_pedido;
 
