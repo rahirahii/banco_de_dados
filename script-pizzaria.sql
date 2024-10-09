@@ -153,6 +153,7 @@ select * from pizzas where valor <17 or valor >17;
 -- selecionar todas as pizzas com valores que não são menores ou maiores que 17
 select * from pizzas where not (valor <17 or valor >17);
 
+
 -- selecionar todas as pizzas com valor na faixa de 17 a 20 reais
 select * from pizzas where valor >= 17 and valor <= 20;
 select * from pizzas where valor between 17 and 20;
@@ -263,4 +264,79 @@ select count(*)from pizzas;
 select nome, count(clientes.id) from clientes inner join pedidos on clientes.id where nome='Alexandre Santos';
 -- 3. Qual o valor total de todos os pedidos feitos até agora?
 select sum(valor) as 'valor total' from itens_pedido;
+
+
+
+
+
+-- Exercicíos com funções de agregação e junções
+
+-- 1. Liste todos os pedidos com o nome do cliente correspondente.
+select pedidos.id as pedido, clientes.nome from pedidos inner join clientes on pedidos.cliente_id= clientes.id;
+
+-- 2. Quantos pedidos foram feitos no total?
+select count(*)from pedidos;
+
+-- 3. Liste os pedidos feitos após '2016-12-15' com o nome do cliente.
+select pedidos.id as pedido, pedidos.data, clientes.nome from pedidos inner join clientes on pedidos.cliente_id=clientes.id where data>'2016-12-15 23:59:59';
+
+
+-- 4. Quantos pedidos foram feitos pelo cliente com o nome "Alexandre Santos"?
+select nome, count(clientes.id) from clientes inner join pedidos on clientes.id where nome= 'Alexandre Santos';
+
+-- 5. Liste todos os pedidos e seus respectivos clientes, incluindo pedidos feitos por clientes que foram excluídos da tabela clientes.
+select clientes.nome, pedidos.id from pedidos right join clientes on clientes.id=pedidos.cliente_id group by nome;
+
+-- 6. Qual o valor total de todos os pedidos feitos até agora?
+select sum(valor)as 'valor total dos pedidos' from pedidos;
+
+-- 7. Qual o total gasto por cada cliente?
+select clientes.id, clientes.nome, sum(valor) from pedidos inner join clientes on clientes.id=pedidos.cliente_id group by nome;
+select * from clientes;
+
+-- 8. Liste todos os clientes e seus pedidos feitos no mês de dezembro de 2016
+select clientes.nome, pedidos.id as pedidos, pedidos.data, pedidos.valor from clientes inner join pedidos on pedidos.cliente_id=clientes.id where pedidos.data between '2016-12-01' and '2016-12-31 23:59:59';
+
+-- 9. Qual o valor médio dos pedidos realizados?
+select avg(valor) as media from pedidos;
+
+-- 10. Liste o valor total dos pedidos por cliente, incluindo pedidos feitos por clientes que foram excluídos (nome aparecerá como NULL).
+select clientes.id, clientes.nome, sum(pedidos.valor)as valor_total, count(pedidos.id)as total_pedidos from pedidos left join clientes on clientes.id=pedidos.cliente_id group by clientes.id, clientes.nome;
+
+-- 11. Qual o valor do pedido mais caro registrado?
+select max(valor)as 'maior valor' from pedidos;
+
+-- 12. Qual o valor do pedido mais barato registrado?
+select min(valor)as 'menor valor' from pedidos;
+
+-- 13. Quantos pedidos cada cliente fez (mesmo que não tenham feito nenhum)?
+select*from pedidos;
+select clientes.id, clientes.nome, count(pedidos.id) from clientes left join pedidos on clientes.id=pedidos.cliente_id group by nome;
+
+-- 14. Qual o pedido mais caro, exibir o nome do cliente e o valor do pedido.
+select clientes.id, clientes.nome, max(valor)as 'maior valor' from pedidos inner join clientes on clientes.id = pedidos.cliente_id;
+
+-- 15. Qual a média de pizzas por pedido e quantos pedidos foram feitos?
+select count(distinct pedido_id)as total_pedidos,avg(quantidade)as media_pizzas from itens_pedido;
+
+-- 16. Qual o total de pizzas vendidas e o número de pedidos do cliente "Bruna Dantas"?
+select sum(quantidade)as total_pizzas, count(pedidos.id)as total_pedido from itens_pedido inner join pedidos on itens_pedido.pedido_id=pedidos.id inner join clientes on pedidos.cliente_id=clientes.id where clientes.nome ='Bruna Dantas';
+
+-- 17. Qual o pedido mais caro e o mais barato do cliente "Laura Madureira"?
+select nome, max(valor) as 'maior valor', min(valor) from pedidos inner join clientes on pedidos.cliente_id= clientes.id where clientes.nome ='José Silva';
+select * from pedidos;
+select * from clientes;
+
+-- 18. Quantas pizzas cada cliente comprou no total?
+select clientes.id, cliente.nome, count(pedidos.id)as total_pizzas
+
+-- 19
+
+-- 20
+
+-- 21
+
+-- 22
+
+
 
